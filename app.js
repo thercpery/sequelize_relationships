@@ -5,6 +5,7 @@ const db = require("./models");
 
 const tutorialRoutes = require("./routes/tutorials");
 const commentRoutes = require("./routes/comments");
+const tagRoutes = require("./routes/tags");
 
 // Initialize here
 const app = express();
@@ -21,6 +22,7 @@ app.get("/", (req, res) => res.send("Mic check"));
 // Routes here
 app.use("/api/tutorials", tutorialRoutes);
 app.use("/api/comments", commentRoutes);
+app.use("/api/tags", tagRoutes);
 const PORT = process.env.PORT || 5001;
 
 app.listen(PORT, () => console.log(`Server started at port ${PORT}`));

@@ -10,7 +10,7 @@ const Tutorial = db.tutorials;
 */
 exports.viewAllTutorials = (req, res) => {
     Tutorial.findAll({
-        include: ["comments"]
+        include: ["comments", "tags"]
     })
         .then(tutorials => res.status(200).json(tutorials))
         .catch(err => {

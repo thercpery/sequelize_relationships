@@ -21,6 +21,7 @@ db.sequelize = sequelize;
 
 db.tutorials = require("./Tutorial")(sequelize, Sequelize);
 db.comments = require("./Comment")(sequelize, Sequelize);
+db.tags = require("./Tag")(sequelize, Sequelize);
 
 db.tutorials.hasMany(db.comments, { as: "comments" });
 
@@ -28,5 +29,18 @@ db.comments.belongsTo(db.tutorials, {
     foreignKey: "tutorialId",
     as: "tutorial"
 });
+
+db.tutorials.belongsToMany(db.tags, {
+    through: "tutorial_tag",
+    as: "tags",
+    foreignKey: "tutorialId"
+});
+
+db.tags.belongsToMany(db.tutorials, {
+    through: "tutorial_tag",
+    as: "tutorials",
+    foreignKey: "tagId"
+});
+
 
 module.exports = db;
