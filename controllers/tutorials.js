@@ -1,5 +1,5 @@
-const Tutorial = require("../models/Tutorial");
-
+const db = require("../models");
+const Tutorial = db.tutorials;
 /* 
     View all Tutorials
     Business Logic:
@@ -13,7 +13,10 @@ exports.viewAllTutorials = (req, res) => {
         include: ["comments"]
     })
         .then(tutorials => res.status(200).json(tutorials))
-        .catch(err => res.status(500).json(err));
+        .catch(err => {
+            console.log(err);
+            res.status(500).json(err);
+        });
 }
 
 /* 
@@ -31,8 +34,6 @@ exports.createTutorial = (req, res) => {
         title: req.body.title,
         description: req.body.description
     };
-    
-    console.log(typeof tutorialData.title, typeof tutorialData.description);
 
     if(tutorialData.title !== undefined && tutorialData.description !== undefined){
         Tutorial.create(tutorialData)

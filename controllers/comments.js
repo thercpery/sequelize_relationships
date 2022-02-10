@@ -1,5 +1,5 @@
-const Comment = require("../models/Comment");
-const Tutorial = require("../models/Tutorial");
+const db = require("../models");
+const Comment = db.comments;
 
 /* 
     Create a comment
@@ -13,9 +13,10 @@ exports.createComment = (req, res) => {
     let commentData = {
         name: req.body.name,
         text: req.body.text,
-        tutorialId: req.body.tutorialId,
-    }
+        tutorialId: req.body.tutorialId
+    };
 
+    console.log(commentData.tutorialId);
     // If none of the fields are empty
     if(commentData.name !== undefined && commentData.text !== undefined && commentData.tutorialId !== undefined){
         // Save the data
@@ -24,8 +25,8 @@ exports.createComment = (req, res) => {
                 return res.status(200).send(true);
             })
             .catch(err => {
-                console.log(err)
-                return res.status(500).json(err);
+                console.log(err);
+                return res.status(500).send(false);
             });
     }
     else{
@@ -42,8 +43,10 @@ exports.createComment = (req, res) => {
     4. If found, display the comment including the corresponding tutorial.
 */
 exports.findCommentById = (req, res) => {
-    Comment.findByPk(req.params.id, {
-        include: ["tutorial"]
+    Comment.findByPk(req.params.id, { 
+        include: {
+            association: "tutorial"
+        } 
     })
         .then(comment => {
             if(comment === null){
@@ -58,4 +61,26 @@ exports.findCommentById = (req, res) => {
             console.log(err);
             return res.status(500).json(err);
         });
+};
+
+/* 
+    Get all comments
+    Business Logic:
+    1. Find all the comments data using the findAll() method.
+    2. Include all the tutorials.
+    3. Display all the data.
+    4. If error, return error and set status code to 500.
+*/
+
+exports.getAllComments = (req, res) => {
+    Comment.findAll({
+        include: {
+            association: "tutorial"
+        }
+    })
+        .then(comments => res.status(200).json(comments))
+        .catch(err => {
+            console.log(err);
+            res.status(500).json(err);
+        })
 };
